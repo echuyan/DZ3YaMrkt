@@ -86,7 +86,7 @@ public class OtusTest {
         //Сортируем по цене от меньшей к большей и ждем обновления списка
         driver.findElement(By.ByXPath.xpath(".//button[text() = 'по цене']")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.ByXPath.xpath("//article[@data-autotest-id='product-snippet']//span[contains(text(),'Samsung')]/parent::a")));
-        Thread.sleep(1000);
+       
 
         //Перегенерим страницу для обновления DOM
         driver.navigate().refresh();
