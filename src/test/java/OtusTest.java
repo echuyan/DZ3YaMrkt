@@ -86,13 +86,13 @@ public class OtusTest {
         //Сортируем по цене от меньшей к большей и ждем обновления списка
         driver.findElement(By.ByXPath.xpath(".//button[text() = 'по цене']")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.ByXPath.xpath("//article[@data-autotest-id='product-snippet']//span[contains(text(),'Samsung')]/parent::a")));
-       
+
 
         //Перегенерим страницу для обновления DOM
         driver.navigate().refresh();
         //Считываем и записываем в строку название первого самсунга и сяоми, дробим на части, чтобы затем вычленить основное название для сравнения
         //При этом избегаем блока Популярные предложения
-        String firstSamsungName = driver.findElement(By.ByXPath.xpath("//a[not(contains(@href,'premiumOffers')) and contains(.,'Samsung')]/span")).getText();
+        String firstSamsungName = driver.findElement(By.ByXPath.xpath("//a[not(contains(@href,'premiumOffers')) and not(contains(@rel,'nofollow noopener')) and contains(.,'Samsung')]/span")).getText();
         String[] shortNames = firstSamsungName.split(",");
         String messageExpectedSamsung = "Товар "+shortNames[0]+" добавлен к сравнению";
 
@@ -120,7 +120,8 @@ public class OtusTest {
         Assert.assertEquals(messageExpectedXiaomi,messageReal);
 
         //Переходим в раздел Сравнение
-        wait.until(ExpectedConditions.elementToBeClickable(By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]/parent::div"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated (By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]"))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByXPath.xpath("//div[(contains(.,'Сравнение товаров'))]")));
 
         //Проверяем, что товаров два
