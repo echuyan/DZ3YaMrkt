@@ -7,10 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.openqa.selenium.interactions.Actions;
-import  org.openqa.selenium.Point;
 
 
 public class OtusTest {
@@ -64,7 +60,7 @@ public class OtusTest {
         logger.info("Сайт открыт");
 
         //Открываем страницу Электроника
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 20);
         WebElement electronics = wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByXPath.xpath(".//span[text() = 'Электроника']")));
         electronics.click();
         logger.info("Открыта страница "+driver.getTitle());
@@ -96,12 +92,12 @@ public class OtusTest {
         String[] shortNames = firstSamsungName.split(",");
         String messageExpectedSamsung = "Товар "+shortNames[0]+" добавлен к сравнению";
 
-        String firstXiaomiName = driver.findElement(By.ByXPath.xpath("//a[not(contains(@href,'premiumOffers')) and contains(.,'Xiaomi')]/span")).getText();
+        String firstXiaomiName = driver.findElement(By.ByXPath.xpath("//a[not(contains(@href,'premiumOffers')) and not(contains(@rel,'nofollow noopener')) and contains(.,'Xiaomi')]/span")).getText();
         String[] shortXiNames = firstXiaomiName.split(",");
         String messageExpectedXiaomi = "Товар "+shortXiNames[0]+" добавлен к сравнению";
 
-        //Добавляем к сравнению первый Самсунг и первый сяоми
-        WebElement addFirstSamsung = driver.findElement(By.ByXPath.xpath("//article[contains(.,'Samsung')]/descendant::div[contains(@aria-label,'сравнению')]"));
+        //Добавляем к сравнению первый Самсунг
+        WebElement addFirstSamsung = driver.findElement(By.ByXPath.xpath("//article[contains(.,'Samsung')and contains(@data-autotest-id,'product-snippet')]/descendant::div[contains(@aria-label,'сравнению')]"));
         addFirstSamsung.click();
         //Сверяем сообщение
         logger.info("Ожидалось "+messageExpectedSamsung);
@@ -110,7 +106,7 @@ public class OtusTest {
         Assert.assertEquals(messageExpectedSamsung,messageReal);
 
         //Добавляем к сравнению первый Сяоми
-        WebElement addFirstXiaomi = driver.findElement(By.ByXPath.xpath("//article[contains(.,'Xiaomi')]/descendant::div[contains(@aria-label,'сравнению')]"));
+        WebElement addFirstXiaomi = driver.findElement(By.ByXPath.xpath("//article[contains(.,'Xiaomi') and contains(@data-autotest-id,'product-snippet')]/descendant::div[contains(@aria-label,'сравнению')]"));
         addFirstXiaomi.click();
         messageReal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByXPath.xpath("//div[contains(text(),'добавлен к сравнению')]"))).getText();
 
@@ -120,9 +116,8 @@ public class OtusTest {
         Assert.assertEquals(messageExpectedXiaomi,messageReal);
 
         //Переходим в раздел Сравнение
-        wait.until(ExpectedConditions.visibilityOfElementLocated (By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]")));
-        wait.until(ExpectedConditions.elementToBeClickable(By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.ByXPath.xpath("//div[(contains(.,'Сравнение товаров'))]")));
+         WebElement we = wait.until(ExpectedConditions.presenceOfElementLocated(By.ByXPath.xpath("//a[(contains(.,'Сравнить'))]")));
+         we.sendKeys(Keys.ENTER);
 
         //Проверяем, что товаров два
         List<WebElement> list = driver.findElements(By.ByXPath.xpath("//a[(contains(.,'Смартфон '))]"));
